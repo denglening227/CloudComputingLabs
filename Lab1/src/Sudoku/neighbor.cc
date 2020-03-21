@@ -75,17 +75,19 @@ static void print_neighbors(const bool adjacent[ROW][COL], int row, int col, int
   }
 }
 
+//校验可行解
 bool solved()
 {
   for (int row = 0; row < ROW; ++row) {
     // check row
     int occurs[10] = { 0 };
     for (int col = 0; col < COL; ++col) {
-      int val = chess[row][col];
-      assert(1 <= val && val <= NUM);
+      int val = chess[row][col];	
+      assert(1 <= val && val <= NUM);	
       ++occurs[val];
     }
-
+	
+	//对于每一行  1到9都要出现一次 那么occurs[1]到occurs[9]都应该是1 加起来是NUM=9
     if (std::count(occurs, occurs+10, 1) != NUM)
       return false;
   }
@@ -97,11 +99,11 @@ bool solved()
       // assert(1 <= val && val <= NUM);
       ++occurs[val];
     }
-
+	//同理校验列
     if (std::count(occurs, occurs+10, 1) != NUM)
       return false;
   }
-
+	//校验九宫格  （这里涉及到二维数组的随机访问 我感觉可能是一个可以优化的地方）
   for (int row = 0; row < ROW; row += 3) {
     for (int col = 0; col < COL; col += 3) {
       int occurs[10] = { 0 };
@@ -119,5 +121,6 @@ bool solved()
         return false;
     }
   }
+  //校验通过
   return true;
 }
