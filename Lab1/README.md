@@ -1,5 +1,8 @@
 # Lab 1: “Super-fast” Sudoku Solving
 
+* Code for Reference：https://github.com/1989chenguo/CloudComputingLabs/tree/master/Lab1
+
+
 Enter in the folder you have cloned from our lab git repo, and pull the latest commit. 
 
 `git pull`
