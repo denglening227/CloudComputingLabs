@@ -34,18 +34,18 @@
 **数独**（日语：数独／すうどく／Sūdoku）是一种数学逻辑游戏，游戏9行9列共81格子组成（9×9=9个3×3） ，玩家需要根据格子提供的数字推理出其他格子的数字。
 
 * 游戏设计者会提供最少17个数字，使得解答谜题只有一个答案。
-* 数独题谜例：
+<u>数独题谜例：</u>
 
-![image-20200325024343622](C:\Users\邓博予\AppData\Roaming\Typora\typora-user-images\image-20200325024343622.png)
+<img src="src/Sudoku_puzzle.png" alt="Sudoku" title="Sudoku puzzle" style="zoom:67%;" />
 
-* 数独题解例：
+<u>数独题解例：</u>
 
-  ![image-20200325024459292](C:\Users\邓博予\AppData\Roaming\Typora\typora-user-images\image-20200325024459292.png)
+<img src="src/Sudoku_answer.png" alt="Sudoku" title="Sudoku answer" style="zoom:67%;" />
 
 #### 2.2 Some Useful Resources 有用资源
 
 * 对解迷用什么算法毫无头绪，Read [this][https://rafal.io/posts/solving-sudoku-with-dancing-links.html]
-* 为简化工作，老师提供一简单实现 `Lab1/src/Sudoku` ，含4种解决算法，有快有慢，**未使用多线程/多进程**。
+* 为简化工作，老师提供一简单实现（链接详见顶端），含4种解决算法，有快有慢，**未使用多线程/多进程**。
 * 两文件 `test1` 与 `test1000` 供给测试。
 * 鼓励(非强制)自主实现算法，及自创算法(若有时间)。
  
@@ -75,7 +75,7 @@
 
 【例 / 图示】
 
-![image-20200325030618718](C:\Users\邓博予\AppData\Roaming\Typora\typora-user-images\image-20200325030618718.png)
+<img src="src/ExampleInput.png" alt="ExampleInput" style="zoom:50%;" />
 
 【例 / 文件格式示】
 
