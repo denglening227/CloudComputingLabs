@@ -6,6 +6,8 @@
 
 *本指导书为 `Lab1/README.md` 翻译版。
 
+* 老师参考代码点击[此处][https://github.com/1989chenguo/CloudComputingLabs/tree/master/Lab1]
+
 \***本次实验关键词：数独算法、多线程编程、Makefile、性能优化、性能测试**
 
 
