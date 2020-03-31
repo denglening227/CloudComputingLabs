@@ -55,4 +55,4 @@ Linux moocos-VirtualBox 3.13.0-24-generic #46-Ubuntu SMP Thu Apr 10 19:11:08 UTC
 
 * 测试结果
 
-![Test1000︱动态分配︱Dance算法](C:\Users\邓博予\Desktop\Test1000︱动态分配︱Dance算法.png)
+<img src="Test1000︱动态分配︱Dance算法.png" alt="ExampleInput" style="zoom:50%;" />
