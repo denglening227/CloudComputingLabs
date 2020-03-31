@@ -88,6 +88,7 @@ for(int j=0; j<N; j++)
 		{
 			printf("%d",solution[i][j]=board[i][j]);
 		}
+printf("%d\n",i);
 }
 		
 	
@@ -122,10 +123,9 @@ int main(int argc, char* argv[])
 
 	int64_t end = now();
 	double sec = (end-start)/1000000.0;//时间开销
-	printf("%f sec %f ms each %d\n", sec, 1000*sec/puzzleNum, solutionNum);
-
 	free(thread_solve);
-
 	outputData();//输出函数
+	printf("\n");
+	printf("%f sec %f ms each %d\n", sec, 1000*sec/puzzleNum, solutionNum);
     return 0;
 }
