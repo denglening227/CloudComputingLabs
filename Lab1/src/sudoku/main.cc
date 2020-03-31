@@ -130,9 +130,9 @@ int main(int argc, char* argv[]) {
 
 	init_neighbors();
 
-	inputdata();
+	inputdata();//输入函数
 
-	int64_t start = now();
+	int64_t start = now();//计算时间开销
 
 	thread_solve = (pthread_t *)malloc(thread_count*sizeof(pthread_t));
 
@@ -150,13 +150,13 @@ int main(int argc, char* argv[]) {
 	
 	int64_t end = now();
 
-	double sec = (end-start)/1000000.0;
+	double sec = (end-start)/1000000.0;//时间开销
 
 	printf("%f sec %f ms each %d\n", sec, 1000*sec/puzzleNum, solutionNum);
 
 	free(thread_solve);
 
-	outputdata();
+	outputdata();//输出函数
 
         return 0;
 }
