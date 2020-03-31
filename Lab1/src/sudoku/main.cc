@@ -55,8 +55,6 @@ void* sudoku_solve(void* x)
 	int K= puzzleNum/thread_count;
 	int first = cnt*K;
 	int last = (cnt==thread_count-1)?puzzleNum:(cnt+1)*K;
-
-
 	for(int i=first; i<last; i++) {
 
 
@@ -79,14 +77,20 @@ void* sudoku_solve(void* x)
 	return NULL;
 }
 
-void outputData()      //输出
+void outputData()      //输出部分
 {
-	 for(int i=0;i<solutionNum;i++)
- {
-  for(int j=0;j<82;j++)
-  printf("%d",solution[i][j]);
-  printf("\n");
- }
+
+		//printf("Data Outputing!\n");
+int i,j;
+for(i=0;i<puzzleNum;i++)
+    	{printf("%d\n",i);
+for(int j=0; j<N; j++)
+		{
+			printf("%d",solution[i][j]=board[i][j]);
+		}
+}
+		
+	
 }
 
 
@@ -95,19 +99,24 @@ void outputData()      //输出
 int main(int argc, char* argv[]) 
 {
 	//初始化
-	if(argv[1]!=NULL) thread_count = strtol(argv[1],NULL,10);//线程数作为参数输入
+	//if(argv[1]!=NULL) thread_count = strtol(argv[1],NULL,10);//线程数作为参数输入
 	init_neighbors();
 	inputData(argv[1]);//输入函数
-
 	int64_t start = now();//计算时间开销
-
+	
 	thread_solve = (pthread_t *)malloc(thread_count*sizeof(pthread_t));
+	
+	
 	for(t=0; t<thread_count; t++) 
 	{
+ 
+        
 		pthread_create(&thread_solve[t],NULL,sudoku_solve,(void*)t);
 	}
+	
 	for(t=0; t<thread_count; t++) 
 	{
+	
 		pthread_join(thread_solve[t],NULL);
 	}
 
