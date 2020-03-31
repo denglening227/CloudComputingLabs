@@ -10,13 +10,13 @@
 
 
 
-char puzzle[num_puzzle][128];
+char puzzle[num_puzzle][128];//保存输入的数独
 
-char solution[num_puzzle][N+1];
+char solution[num_puzzle][N+1];//保存结果数独,值为数字
 
-int board[num_puzzle][N];
+int board[num_puzzle][N];//数独棋盘一维数组
 
-int spaces[num_puzzle][N];
+int spaces[num_puzzle][N];//待填的空格，值表示在棋盘中的下标
 
 
 
@@ -48,7 +48,8 @@ void inputdata()    //输入部分
 {
 
 
-//修改一下，与我下面的定义相适应
+
+	//修改一下，与我下面的定义相适应
 /*
         //Counting
 	
@@ -74,13 +75,15 @@ void inputdata()    //输入部分
 */
 
 
+
+
 }
 
 void* sudoku_solve(void* x) {
 
-	long int cnt = (long int) x;
+	long int cnt = (long int) x;//cnt表示第几个线程
 
-	int K= puzzleNum/thread_count;
+	int K= puzzleNum/thread_count;//每个线程平均分到的任务数
 
 	int first = cnt*K;
 
@@ -90,7 +93,7 @@ void* sudoku_solve(void* x) {
 	for(int i=first; i<last; i++) {
 
 
-		input(puzzle[i],board[i],spaces[i]);
+		input(puzzle[i],board[i],spaces[i]);//根据输入的字符串转为一维棋盘中的数字
 
 		if(solve(0 ,board[i])) {
 
@@ -150,7 +153,7 @@ int main(int argc, char* argv[]) {
 	
 	int64_t end = now();
 
-	double sec = (end-start)/1000000.0;//时间开销
+	double sec = (end-start)/1000000.0;
 
 	printf("%f sec %f ms each %d\n", sec, 1000*sec/puzzleNum, solutionNum);
 
