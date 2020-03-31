@@ -41,7 +41,7 @@ void inputData(char* fileName)    //输入部分
 		showError(100);
 		exit(1);
 	}
-	while (fgets(puzzle[puzzleNum], 82, testFile))
+	while (fgets(puzzle[puzzleNum], 83, testFile))
 	{
 		printf("%d ",puzzleNum);
 		puts(puzzle[puzzleNum]);
@@ -55,6 +55,8 @@ void* sudoku_solve(void* x)
 	int K= puzzleNum/thread_count;
 	int first = cnt*K;
 	int last = (cnt==thread_count-1)?puzzleNum:(cnt+1)*K;
+
+
 	for(int i=first; i<last; i++) {
 
 
@@ -77,9 +79,14 @@ void* sudoku_solve(void* x)
 	return NULL;
 }
 
-void outputData()      //输出部分
+void outputData()      //输出
 {
-	printf("Data Outputing!");
+	 for(int i=0;i<solutionNum;i++)
+ {
+  for(int j=0;j<82;j++)
+  printf("%d",solution[i][j]);
+  printf("\n");
+ }
 }
 
 
