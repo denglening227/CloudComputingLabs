@@ -36,11 +36,11 @@
 * 游戏设计者会提供最少17个数字，使得解答谜题只有一个答案。
 <u>数独题谜例：</u>
 
-<img src="src/Sudoku_puzzle.png" alt="Sudoku" title="Sudoku puzzle" style="zoom:67%;" />
+<img src="Sudoku_puzzle.png" alt="Sudoku" title="Sudoku puzzle" style="zoom:67%;" />
 
 <u>数独题解例：</u>
 
-<img src="src/Sudoku_answer.png" alt="Sudoku" title="Sudoku answer" style="zoom:67%;" />
+<img src="Sudoku_answer.png" alt="Sudoku" title="Sudoku answer" style="zoom:67%;" />
 
 #### 2.2 Some Useful Resources 有用资源
 
@@ -48,7 +48,7 @@
 * 为简化工作，老师提供一简单实现（链接详见顶端），含4种解决算法，有快有慢，**未使用多线程/多进程**。
 * 两文件 `test1` 与 `test1000` 供给测试。
 * 鼓励(非强制)自主实现算法，及自创算法(若有时间)。
- 
+
 
 
 ## 3. Your Lab Task 实验任务
@@ -75,7 +75,7 @@
 
 【例 / 图示】
 
-<img src="src/ExampleInput.png" alt="ExampleInput" style="zoom:50%;" />
+<img src="ExampleInput.png" alt="ExampleInput" style="zoom:50%;" />
 
 【例 / 文件格式示】
 

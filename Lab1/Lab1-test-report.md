@@ -2,7 +2,7 @@
 
 * 数据规模：10000
 * Dance 算法
-* 动态分配
+* 平均分配
 * 两电脑参与测试。
 
 1. 电脑 A
@@ -55,4 +55,6 @@ Linux moocos-VirtualBox 3.13.0-24-generic #46-Ubuntu SMP Thu Apr 10 19:11:08 UTC
 
 * 测试结果
 
-<img src="Test1000︱动态分配︱Dance算法.png" alt="ExampleInput" style="zoom:50%;" />
+<img src="src/Test10000︱Dance算法.png" alt="ExampleInput" style="zoom:100%;" />
+
+(图片统一放进 Lab1/src 内)
