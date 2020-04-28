@@ -13,12 +13,14 @@
 #include <getopt.h>
 #include <pthread.h>
 #include <iostream>
+#include <fstream>
 using namespace std;
 
 #define DEFAULT_IP_Address "127.0.0.1"
 #define DEFAULT_PORT_NUMBER 8888
 #define NOT_FOUND_FILEPATH "./src/404.html"
 #define NOT_IMPLEMENTED_FILEPATH "./src/501.html"
+#define POST_SHOW_FILEPATH "./Post_show/post_show.html"
 #define INDEX_PAGE_FILEPATH "./src/index.html"
 
 #define REV_BUF_SIZE 512
@@ -31,6 +33,10 @@ pthread_t *responseThread;
 // 浏览器的请求类型
 enum RequestType{REQ_GET, REQ_POST, REQ_UNDEFINED};
 
+string Post_Name = "";
+string Post_ID = "";
+bool postDataValid = false;
+
 int pthread_num; //线程数
 int launchTcpServer(char* IP_Address, int portNumber);
 void ErrMsg(int errCode);
@@ -42,7 +48,10 @@ void unimplemented(int socket);
 void returnPost(int socket);
 void pageNotFound(int socket);
 void sendFile(int socket, int filefd);
-
+void seekPostData(char* BUFFER);
+void setName(string str);
+void setPostID(string str);
+void generatePostShowHtml();
 
 void Write(int fd, void *ptr, size_t nbytes)
 {
@@ -64,7 +73,9 @@ int main(int argc, char* argv[])
     //判断是否缺少参数
 	if(argc < 5)
 	{
-		printf(" ip and port are empty\n");
+		printf("<Usage> Insert Arguments IP and Port.\n");
+        printf("<Exmaple> ./httpserver --ip 127.0.0.1 --port 8888 --number-thread 2\n");
+        printf("<Attention> IP and port are required. Threads number:2-8.\n");
 		return 1;
 	}
 
@@ -149,7 +160,7 @@ int launchTcpServer(char* IP_Address, int portNumber)
 int Socket(int family, int type, int protocol)
 {
     int n = socket(family,type,protocol);
-    if(n<0) {ErrMsg(100);}
+    if(n<0) {ErrMsg(200);}
     return n;
 }
 // 解决端口被占用问题
@@ -174,7 +185,8 @@ void ErrMsg(int errCode)
 {
     switch(errCode)
     {
-        case 100:printf("Error <100> | Open file failed.\n");
+        case 100:printf("Error <100> | Open file failed.\n");break;
+        case 101:printf("Error <101> | Create Post_Show HTML Failed.\n");break;
 
         case 200:printf("Error <200> | Cannot Create a Socket.\n");break;
         case 201:printf("Error <201> | ReuseAddr Failed.\n");break;
@@ -208,22 +220,38 @@ void response2Clnt(int socket,const char* filepath, enum RequestType requestType
 {
     if(requestType == REQ_UNDEFINED)
     {
+        //printf("REQ_UNDEFINED\n");
         sendStartLine(socket,501);
         unimplemented(socket);
     }
     else if(requestType == REQ_POST)
     {
-        sendStartLine(socket,200);
-        returnPost(socket);
+        printf("REQ_POST\n");
+        printf("filepath: %s\n",filepath);
+        if(postDataValid && filepath=="./Post_show")
+        {
+            printf("PostSHOW\n");
+            sendStartLine(socket,200);
+            returnPost(socket);
+        }
+        else
+        {
+            printf("POSTNOTSHOW\n");
+            sendStartLine(socket,404);
+            pageNotFound(socket);
+        }
     }
     else if(requestType == REQ_GET)
     {
+        //printf("REQ_GET\n");
+        //printf("filepath: %s\n",filepath);
         // 未指定访问文件，则自动转接到 Index页面
-        if(strcmp(filepath,"./") == 0)
+        if(strcmp(filepath,"./") == 0 || strcmp(filepath,"./index.html") == 0)
         {
-            filepath = "./index.html";
+            filepath = INDEX_PAGE_FILEPATH;
         }
         int filefd = open(filepath, O_RDONLY);
+        //printf("filefd: %d\n",filefd);
         if(filefd == -1)
         {
             ErrMsg(100);
@@ -253,6 +281,15 @@ void pageNotFound(int socket)
     sendFile(socket,filefd);
     close(filefd);
 }
+void returnPost(int socket)
+{
+    generatePostShowHtml();
+    int fileno = open(POST_SHOW_FILEPATH, O_RDONLY);
+    sendFile(socket,fileno);
+    close(fileno);
+    Post_Name = "";
+    Post_ID = "";
+}
 void sendStartLine(int socket, int returnNum)
 {
     char BUFFER[SEND_BUF_SIZE] = {0};
@@ -275,10 +312,7 @@ void sendFile(int socket, int filefd)
         readBytes = read(filefd, BUFFER, SEND_BUF_SIZE);
     }
 }
-void returnPost(int socket)
-{
-    
-}
+
 
 /*
  * 读取/解析请求部分
@@ -306,7 +340,7 @@ int getOneLineFromSocket(int socket, char* BUFFER, int BUF_SIZE)
             // 之后接收到字符'\n',表示一行结束
             if(tmp == '\n' && charaCount<BUF_SIZE)
             {
-                read(socket,&tmp,1);
+                int readno = read(socket,&tmp,1);
                 BUFFER[charaCount++] = '\n';
                 break;
             }
@@ -372,6 +406,7 @@ void* analyzeClientRequest(void* ptr)
         }else if(requestType==REQ_GET){
         }else if(requestType==REQ_POST){
             if(strncmp(BUFFER, "Content-Length:", 48)==0){
+                seekPostData(BUFFER);
                 contentLength = atoi(BUFFER+48);
             }
         }
@@ -384,7 +419,7 @@ void* analyzeClientRequest(void* ptr)
             fprintf(stderr, "Query string buffer is smaller than content length\n");
             contentLength = QUERY_STRING_LENGTH;
         }
-        read(clnt_sock, requestQueryString, contentLength);
+        int readno = read(clnt_sock, requestQueryString, contentLength);
     }
 
     switch(requestType){
@@ -401,4 +436,57 @@ void* analyzeClientRequest(void* ptr)
     }
     close(clnt_sock);
     return NULL;
+}
+void seekPostData(char* BUFFER)
+{
+    string str;
+    int BUFFER_SIZE = strlen(BUFFER);
+    for(int i=0;i<BUFFER_SIZE;++i)
+    {
+        str+=BUFFER[i];
+    }
+    if( str.find("Name=")>=0 && str.find("ID=")>=0 )
+    {
+        setName(str);
+        setPostID(str);
+        postDataValid = true;
+    }
+    postDataValid = false;
+}
+void setName(string str)
+{
+    Post_Name = "";
+    int pos = str.find("Name=");
+    for(pos+=5;;++pos)
+    {
+        if(str[pos]=='&') break;
+        Post_Name+=str[pos];
+    }
+}
+void setPostID(string str)
+{
+    Post_ID = "";
+    int pos = str.find("ID=");
+    for(pos+=3;;++pos)
+    {
+        if(str[pos]=='\'') break;
+        Post_ID+=str[pos];
+    }
+}
+void generatePostShowHtml()
+{
+    remove(POST_SHOW_FILEPATH);
+    ofstream postShowFile;
+    postShowFile.open(POST_SHOW_FILEPATH);
+    if(!postShowFile.is_open())
+    {
+        ErrMsg(101);
+        exit(1);
+    }
+    postShowFile<<"<html><title>POST method</title><body bgcolor=ffffff>"<<endl;
+    postShowFile<<"Your Name: "<<Post_Name<<endl;
+    postShowFile<<"ID: "<<Post_ID<<endl;
+    postShowFile<<"<hr><em>Http Web Server</em>"<<endl;
+    postShowFile<<"/body></html>"<<endl;
+    postShowFile.close();
 }
