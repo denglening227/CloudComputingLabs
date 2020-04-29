@@ -23,8 +23,8 @@ using namespace std;
 #define POST_SHOW_FILEPATH "./Post_show/post_show.html"
 #define INDEX_PAGE_FILEPATH "./src/index.html"
 
-#define REV_BUF_SIZE 512
-#define SEND_BUF_SIZE 512
+#define REV_BUF_SIZE 1024
+#define SEND_BUF_SIZE 1024
 #define MAX_CLIENT_COUNT 10
 
 // 线程
@@ -354,6 +354,7 @@ int getOneLineFromSocket(int socket, char* BUFFER, int BUF_SIZE)
 // 接收浏览器端的数据,并返回一个http包
 void* analyzeClientRequest(void* ptr)
 {
+    postDataValid = false;
     int clnt_sock = *(int*)ptr;
     char c;
     char BUFFER[REV_BUF_SIZE+1] = {0};
@@ -405,8 +406,10 @@ void* analyzeClientRequest(void* ptr)
             }   // [END]此处结束“未思考逻辑”
         }else if(requestType==REQ_GET){
         }else if(requestType==REQ_POST){
-            if(strncmp(BUFFER, "Content-Length:", 48)==0){
+            if(!postDataValid){
                 seekPostData(BUFFER);
+            }
+            if(strncmp(BUFFER, "Content-Length:", 48)==0){
                 contentLength = atoi(BUFFER+48);
             }
         }
@@ -428,7 +431,7 @@ void* analyzeClientRequest(void* ptr)
         case REQ_POST:
             {
                 if(contentLength==0){
-                    response2Clnt(clnt_sock, NOT_FOUND_FILEPATH, REQ_POST);
+                    response2Clnt(clnt_sock, requestFilePath, REQ_POST);
                 }
             }break;
         case REQ_UNDEFINED:response2Clnt(clnt_sock, NOT_IMPLEMENTED_FILEPATH, REQ_UNDEFINED);break;
@@ -439,39 +442,42 @@ void* analyzeClientRequest(void* ptr)
 }
 void seekPostData(char* BUFFER)
 {
-    string str;
     int BUFFER_SIZE = strlen(BUFFER);
-    for(int i=0;i<BUFFER_SIZE;++i)
+    string str(BUFFER, BUFFER+BUFFER_SIZE);
+    printf("Let's seek Name&ID. BUFFER %d: %s\n",BUFFER_SIZE,str.c_str());
+    int pos1 = str.find("Name=");
+    int pos2 = str.find("ID=");
+    printf("(pos1,pos2)=(%d,%d)\n",pos1,pos2);
+    if( pos1>=0 && pos2>=0 )
     {
-        str+=BUFFER[i];
-    }
-    if( str.find("Name=")>=0 && str.find("ID=")>=0 )
-    {
+        printf("hey\n");
         setName(str);
         setPostID(str);
         postDataValid = true;
+        cout<<"Valid: "<<postDataValid<<endl;
     }
-    postDataValid = false;
 }
 void setName(string str)
 {
     Post_Name = "";
     int pos = str.find("Name=");
-    for(pos+=5;;++pos)
+    for(pos+=5;pos<=100;++pos)
     {
         if(str[pos]=='&') break;
         Post_Name+=str[pos];
     }
+    //cout<<"Name: "<<Post_Name<<endl;
 }
 void setPostID(string str)
 {
     Post_ID = "";
     int pos = str.find("ID=");
-    for(pos+=3;;++pos)
+    for(pos+=3;pos<=100;++pos)
     {
         if(str[pos]=='\'') break;
         Post_ID+=str[pos];
     }
+    //cout<<"ID: "<<Post_ID<<endl;
 }
 void generatePostShowHtml()
 {
