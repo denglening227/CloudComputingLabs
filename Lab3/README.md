@@ -1,19 +1,17 @@
 # Lab3: 简易的分布式KV库
 
-  **⚠  DDL：2020年5月27日 上午10点整 初级版+高级版**
+   **⚠  DDL：2020年5月27日 上午10点整 初级版+高级版**
 
-  **⚠  DDL：2020年6月03日 上午10点整 极限版+终极版**
+   **⚠  DDL：2020年6月03日 上午10点整 极限版+终极版**
 
 * 在本地 CloudComputingLabs 文件夹使用 `git pull` 指令从实验仓库中获取最近提交。
 * 实验指导书为 `Lab3/README English.ver.md` ，本文档其翻译版本。
 * 所有材料置于 `Lab3/` 文件夹内。
 
-[TOC]
 
 ## 1. Overview 概述
 
 * 自行实现一个简易【Distributed 分布式的】【In-memory 数据存于内存的】【Key-Value 键-值存储的】数据库。
-
 * 实现中可以使用二阶段提交（*Two*-*phase Commit*）协议，以保证键-值存储的并发性与鲁棒性（Robustness）。
 
 ### Goals 目标
@@ -37,21 +35,21 @@
 * Key-Value Store 键-值存储 | 使用「键-值」的数据结构，如下表：
 
   ```
-  |-------|-------------------|
-  | Key	|	Value			|
-  |-------|-------------------|
-  | K1	|	AAA,BBB,CCC		|
-  | K2	|	AAA,BBB			|
-  |-------|-------------------|
+  |-------|-----------------------|
+  | Key	|	Value		|
+  |-------|-----------------------|
+  | K1	|	AAA,BBB,CCC	|
+  | K2	|	AAA,BBB 	|
+  |-------|-----------------------|
   ```
 
 #### Commands 用户操作指令
 
 通常，KV存储给用户提供了以下方法从数据库内**【存/删/读】**数据：
 
-* **`set(key,value)`** **存储。**两参数对应上表 key、value。（一些KV库把此命名为 **put**）
-* **`del(key)`** **删除。**参数对应上表 key，以此定位。
-* **`value=get(key)`** **读取。**参数对应上表 key，以此定位，返回 value 值。
+* **`set(key,value)`** 存储。两参数对应上表 key、value。（一些KV库把此命名为 **put**）
+* **`del(key)`** 删除。参数对应上表 key，以此定位。
+* **`value=get(key)`** 读取。参数对应上表 key，以此定位，返回 value 值。
 
 ### 2.2 Distributed KV Store 分布式KV库
 
@@ -99,7 +97,7 @@
      * 所有参与者返信以 ACK。
      * 协调员接收到 ACKs 后，会把「Got Commit」写入日志。
 
-     <img src="images/two-phase-commit.png" alt="two phase commit" title="two phase commit" style="zoom:40%;" />
+     ![two-phase-commit](images/two-phase-commit.png)
 
 * **详细步骤遵循以下：**
 
@@ -123,7 +121,7 @@
 
 ### 3.1 Task overview 任务概览
 
-<img src="images\KVStoreOverview.jpg" alt="KVStoreOverview" style="zoom:50%;" />
+![KVStoreOverview](images/KVStoreOverview.png)
 
 * 实现一个简单的**【分布式KV库】**。
 * 该库作为网络服务在远程计算机上运行。
