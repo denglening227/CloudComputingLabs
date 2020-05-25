@@ -4,7 +4,12 @@
 #include <string.h>
 #include <errno.h>
 
+// Q1: 这三个函数是给参与者对数据库的原子操作函数？
 
+/* 删除数据
+ * 参数传入：（表示操作的字符串）
+ * 参数传出：【？字符串】
+ */
 char *Rdel(char *ptr){
 	static char str[100];
 	char s[10];
@@ -44,7 +49,10 @@ char *Rdel(char *ptr){
 	return str;
 }
 
-
+/* 查询数据
+ * 参数传入：（表示操作的字符串）
+ * 参数传出：【？字符串】
+ */
 char *Rget(char *ptr){
 	static char str[100];
 	char s[10];
@@ -84,6 +92,10 @@ char *Rget(char *ptr){
 	return str;
 }
 
+/* 添加数据
+ * 参数传入：（表示操作的字符串）
+ * 参数传出：【？字符串】
+ */
 char *Rset(char *ptr){
 	static char str[100];
 	char s[10];
@@ -130,10 +142,11 @@ char *Rset(char *ptr){
 	}
 	return str;
 }
-
+/*
 int main(){
 	char buf[BUFSIZ];
 	fgets(buf,sizeof(buf),stdin);
 	printf("%s\n",Rdel(buf));
 	return 0;
 }
+*/
