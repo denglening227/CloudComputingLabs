@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-26 13:56:34
- * @LastEditTime: 2020-05-26 19:27:55
+ * @LastEditTime: 2020-05-26 22:08:26
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \CloudComputingLabs\Lab3\src\database.cc
@@ -87,7 +87,7 @@ void database_PRINT()
     for(;;++it,++num)
     {
         if(it == database.end()) break;
-        cout<<num<<" "<<it->getKey()<<": "<<it->getValue()<<endl;
+        cout<<num<<" "<<it->getKey()<<"-"<<it->getValue()<<endl;
     }
 }
 

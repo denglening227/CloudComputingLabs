@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-26 02:08:59
- * @LastEditTime: 2020-05-26 04:53:01
+ * @LastEditTime: 2020-05-26 20:46:23
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \CloudComputingLabs\Lab3\src\kvstore2pcsystem.cpp
@@ -10,7 +10,10 @@
 #include <string>
 #include <iostream>
 #include <fstream>
-#include <config.cc>
+#include "log.cc"
+#include "config.cc"
+#include "database.cc"
+#include "coordinator.cpp"
 using namespace std;
 
 
@@ -40,29 +43,22 @@ int main(int argc, char* argv[])
   config.parse_arg(argc,argv,file_path);
   config.parse_config(file_path);
 
-
   if(mode == COORDINATOR_MODE)
   {
-    //待添加：协调者程序启动
+    RUN_COORDINATOR();
   }
   else if(mode == PARTICIPANT_MODE)
   {
-    //待添加：客户端程序启动
+    RUN_PARTICIPANT();
   }
   return 0;
 }
 
-
-
-// 数据库结构
-struct DATABASE_ENTRY
+void RUN_COORDINATOR()
 {
-  int num;
-  string key;
-  string value;
-};
-struct COMMIT_LOG
+
+}
+void RUN_PARTICIPANT()
 {
-  int num;
-  string content;
-};
+
+}
