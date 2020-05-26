@@ -117,7 +117,7 @@ void loop_abort()       // 对所有参与者发送终止信息
 	for(; it != participant_hostname_set.end(); it++)
 	{
 		int participant_fd = it->second;
-		int term = MSG_ABORT;
+		int term = MSG_TERMINATE;
 		send(participant_fd, (char *)&term, sizeof(int), 0); 
 		close(participant_fd);
 	}
