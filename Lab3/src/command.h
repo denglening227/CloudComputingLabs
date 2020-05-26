@@ -32,6 +32,9 @@ class COMMAND
         enum COMMAND_TYPE setType(enum COMMAND_TYPE t){type=t;}
         void setKey(string a){key=a;}
         void setValue(string b){value=b;}
+
+     // 分割字符
+     static std::vector<std::string> split(const std::string &str, const std::string &delim);
 };
 
 COMMAND::COMMAND(const COMMAND & commands)

@@ -52,6 +52,22 @@ vector<COMMAND>::iterator command_FIND(vector<COMMAND>::iterator it, COMMAND_TYP
     return command_FIND(it,type,key,value);
 }
 
+std::vector<std::string> COMMAND::split(const std::string &str, const std::string &delim) {
+    std::vector<std::string> tokens;
+    size_t prev = 0, pos = 0;
+    do {
+        pos = str.find(delim, prev);
+        if (pos == std::string::npos) pos = str.length();
+        std::string token = str.substr(prev, pos - prev);
+        if (!token.empty()) tokens.push_back(token);
+        prev = pos + delim.length();
+    } while (pos < str.length() && prev < str.length());
+    return tokens;
+}
+
+
+
+
 // 删除指定（操作，键，值）的条目
 void command_DEL(COMMAND_TYPE type, string key, string value)
 {

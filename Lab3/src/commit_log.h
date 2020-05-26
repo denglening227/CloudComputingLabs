@@ -23,7 +23,10 @@ enum LOG_TYPE
     PREPARED,
     ABORT,
     COMMIT,
-    GOT_COMMIT
+    GOT_COMMIT,
+    SET,
+    DEL,
+    GET
 };
 
 /* 日志类

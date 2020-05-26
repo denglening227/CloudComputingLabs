@@ -7,6 +7,7 @@
  * @FilePath: \CloudComputingLabs\Lab3\src\database.cc
  */
 #include "database.h"
+#include "commit_log.h"
 
 /* 添加数据
  * 参数输入：（键，值）
@@ -21,6 +22,7 @@ int data_SET(string key, string value)
         database.push_back(temp);
         // 检查是否成功添加
         if(data_GET(key) == value) return 3;
+	log_ADD(SET, "");
         return 0;
     }
     else if(temp == value) // 情况2：完全重合
@@ -29,6 +31,7 @@ int data_SET(string key, string value)
     }
     else                            // 情况3：存在相同键，但值不同，则无条件覆盖
     {
+        log_ADD(SET, "", key, value);
         return 1+data_UPDATE(key,value);
     }
 }
@@ -52,6 +55,7 @@ int data_UPDATE(string key, string value)
 string data_GET(string key)
 {
     vector<DATABASE_ENTRY>::iterator it = data_FIND(database.begin(),key);
+    log_ADD(GET, "");
     if(it==database.end()) return "";
     else return it->getValue();
 }
@@ -72,6 +76,7 @@ vector<DATABASE_ENTRY>::iterator data_FIND(vector<DATABASE_ENTRY>::iterator it, 
  */
 int data_DEL(string key)
 {
+    log_ADD(DEL, "");
     if(database.empty()) return 1;
     vector<DATABASE_ENTRY>::iterator it = data_FIND(database.begin(),key);
     if(it==database.end()) return 2;
