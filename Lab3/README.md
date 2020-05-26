@@ -121,7 +121,7 @@
 
 ### 3.1 Task overview 任务概览
 
-![KVStoreOverview](images/KVStoreOverview.png)
+![KVStoreOverview](images/KVStoreOverview.jpg)
 
 * 实现一个简单的**【分布式KV库】**。
 * 该库作为网络服务在远程计算机上运行。

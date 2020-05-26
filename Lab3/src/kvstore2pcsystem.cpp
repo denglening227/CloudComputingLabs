@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-26 02:08:59
- * @LastEditTime: 2020-05-26 20:46:23
+ * @LastEditTime: 2020-05-27 06:34:28
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \CloudComputingLabs\Lab3\src\kvstore2pcsystem.cpp
@@ -13,7 +13,7 @@
 #include "log.cc"
 #include "config.cc"
 #include "database.cc"
-#include "coordinator.cpp"
+#include "serverHandler.cpp"
 using namespace std;
 
 
@@ -39,26 +39,25 @@ int main(int argc, char* argv[])
   // 获取参数值
   char*file_Path=argv[2];
 
-  Config config;
   config.parse_arg(argc,argv,file_path);
   config.parse_config(file_path);
 
   if(mode == COORDINATOR_MODE)
   {
-    RUN_COORDINATOR();
+    RUN_COORDINATOR(config);
   }
   else if(mode == PARTICIPANT_MODE)
   {
-    RUN_PARTICIPANT();
+    RUN_PARTICIPANT(file_Path);
   }
   return 0;
 }
 
-void RUN_COORDINATOR()
+void RUN_COORDINATOR(Config config)
 {
-
+  serverhandler(config);
 }
-void RUN_PARTICIPANT()
+void RUN_PARTICIPANT(char* filename)
 {
-
+  participant(filename);
 }

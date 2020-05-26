@@ -1,7 +1,7 @@
 #include "coordinator.h"
 #include "socklib.h"
 #include "2pc.h" 
-
+#include "config.cc"
 
 
 using namespace std;
@@ -24,7 +24,7 @@ string char_to_str(char *str)      //字符数组转换为字符串
 	return s;
 }
 
-void print_res(void)   
+void print_res()   
 {
 	vector<float>::iterator it = commit_success.begin();
 	for(; it != commit_success.end(); it++)
@@ -180,7 +180,7 @@ void loop(int msg_type)  //给所有参与者发送某一请求
 
 void two_phase_commit(char *operation)   //参数为一个操作字符 
 {
-	
+	int result = -4;
 	int ask = 0;
 	// phase one: loop through the cohorts set to see if all of them is available
 	timespec start = get_wall_time();	//	start timer
@@ -190,8 +190,7 @@ void two_phase_commit(char *operation)   //参数为一个操作字符
 	time_count.tv_sec = 0;
 	time_count.tv_nsec = 0;
 	
-		if(system_failure)
-			break;
+		if(system_failure) return result;
 		int if_suc = false;
 		timespec item_begin = get_wall_time();  //开始计时  
 		if(loop_ask(ASK_COMMIT, operation))
@@ -234,20 +233,18 @@ void two_phase_commit(char *operation)   //参数为一个操作字符
 	long long time_used = (end.tv_sec - start.tv_sec) * 1000000000 + end.tv_nsec - start.tv_nsec;
 	long long time_count_ll = time_count.tv_sec * 1000000000 + time_count.tv_nsec;
 	printf("time used:%lfms latency: %lfms throughput: %f item per ms\n", time_used / 1000000.0, (time_count_ll / 1000000.0) / item_suc, item_suc / (time_used / 1000000.0));
-	return;
+	return result;
 }
 
 
 
-int coordinator(char * filename)       //传递参数为配置文件
+int coordinator(char * operation, Config config)       //传递参数为配置文件
 {
-	
+
 	int sockfd, option=1;
-	
-	int parnum = 0;   
-        int num_par   //配置文件中参与者的数量
-        
-	
+
+	int parnum = 0;
+    int num_par=config.others.size();   //配置文件中参与者的数量
 
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);   // 创建套接字
 	setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, (char *)(&option), sizeof(option));//设置选项值
@@ -276,6 +273,7 @@ int coordinator(char * filename)       //传递参数为配置文件
 
 	while(true)        //协调者与每个参与者创建通信
 	{
+	
 		socklen_t parlen = sizeof(par_addr[parnum]);
 		int newsockfd = accept(sockfd, (struct sockaddr *) &par_addr[parnum], &parlen);
 		if (newsockfd < 0) 
@@ -283,22 +281,16 @@ int coordinator(char * filename)       //传递参数为配置文件
 			perror("ERROR on accept");
 			return 1;
 		}
-                
-		int portNum=         //从配置文件中解析出来端口号
-		
+
+		int portNum = config.others[parnum]->second;        //从配置文件中解析出来端口号
+
 		parnum++;
 		part_portnum_set[portNum] = newsockfd;
 		client_fd_set[newsockfd] = portNum;
 		if(parnum == num_par)
 			break;
 	}
-
-
-
-
-	two_phase_commit(operation);//需要一个操作字符数组
-	//	print_res();
-	return 0;
+	return two_phase_commit(operation);//需要一个操作字符数组
 }
 
 
