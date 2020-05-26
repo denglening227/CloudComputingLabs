@@ -20,15 +20,16 @@
 #include <vector>
 #include <sys/time.h>
 
-#define NUM_CLIENTS 1
+#define NUM_PARTS 3
+#define MAX_PARTS_NUM 10
 
 using namespace std;
 
-typedef string hostname;
+typedef int portnum;
 typedef int fd;
 
-struct sockaddr_in serv_addr, cli_addr;
-map<hostname, fd> client_hostname_set;
-map<fd, hostname> client_fd_set;
+struct sockaddr_in crd_addr, par_addr[MAX_PARTS_NUM];
+map<portnum, fd> part_portnum_set;
+map<fd, portnum> part_fd_set;
 vector<float> commit_success;
 map<int, float> timestamp_count;

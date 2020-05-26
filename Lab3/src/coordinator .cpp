@@ -176,7 +176,7 @@ void loop(int msg_type)  //给所有参与者发送某一请求
 	return;
 }
 
-void two_phase_commit(char * filename)    
+void two_phase_commit(char * filename)   //需要修改，参数为一个操作字符 
 {
 	puts(filename);
 	int ask = 0;
@@ -239,5 +239,67 @@ void two_phase_commit(char * filename)
 	printf("time used:%lfms latency: %lfms throughput: %f item per ms\n", time_used / 1000000.0, (time_count_ll / 1000000.0) / item_suc, item_suc / (time_used / 1000000.0));
 	return;
 }
+
+
+int coordinator(char * filename)       //传递参数为配置文件
+{
+	
+	int sockfd, option=1;
+	
+	int parnum = 0;   
+        int num_par   //配置文件中参与者的数量
+	
+
+	sockfd = socket(AF_INET, SOCK_STREAM, 0);   // 创建套接字
+	setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, (char *)(&option), sizeof(option));//设置选项值
+	struct timeval timeout; 
+	if (sockfd < 0) {
+		perror("ERROR opening socket");
+		return 1;
+	}
+	bzero((char *) &crd_addr, sizeof(crd_addr));// 给变量填充字符0
+	crd_addr.sin_family = AF_INET;              // 表明使用 IPv4 地址（格式）
+	crd_addr.sin_addr.s_addr = inet_addr(IP_Address);;       //具体 IP 地址
+	crd_addr.sin_port = htons(portNumber);                   // 具体端口号
+
+	socklen_t sockaddr_len = (socklen_t)sizeof(struct sockaddr);
+	if (bind(sockfd, (struct sockaddr *) &serv_addr, sockaddr_len) < 0) // 绑定套接字、结构体变量
+	{
+		perror("ERROR on binding");
+		return 1;
+	}
+
+	if(listen(sockfd, MAX_PARTS_NUM)==-1)       // 被动(睡眠)监听参与者发来请求
+	{
+		perror("ERROR on listening");
+		return 1;
+	}
+
+	while(true)        //协调者与每个参与者创建通信
+	{
+		socklen_t parlen = sizeof(par_addr[parnum]);
+		int newsockfd = accept(sockfd, (struct sockaddr *) &par_addr[parnum], &parlen);
+		if (newsockfd < 0) 
+		{
+			perror("ERROR on accept");
+			return 1;
+		}
+                
+		int portNum=         //从配置文件中解析出来端口号
+		
+		parnum++;
+		part_portnum_set[portNum] = newsockfd;
+		client_fd_set[newsockfd] = portNum;
+		if(parnum == num_par)
+			break;
+	}
+	two_phase_commit(argv[1]);
+	//	print_res();
+	return 0;
+}
+
+
+
+
 
 

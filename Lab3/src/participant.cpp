@@ -168,4 +168,30 @@ void handle_requests(int sockfd)
 	return;
 }
 
+int participant(char * filename)
+{
+	
+	int portno;
+	int sockfd;
+	struct sockaddr_in crd_addr;
 
+	portno = ;                //解析
+        char* IP_Address= ;       //解析
+	sockfd = socket(AF_INET, SOCK_STREAM, 0); // 创建套接字
+	if(sockfd < 0) 
+		perror("ERROR opening socket");
+	
+	memset((char *) &crd_addr, 0, sizeof(crd_addr));
+	crd_addr.sin_family = AF_INET;
+	crd_addr.sin_addr.s_addr = inet_addr(IP_Address); //具体 IP 地址
+	crd_addr.sin_port = htons(portno);
+	int newsockfd = connect(sockfd,(struct sockaddr *) &crd_addr,sizeof(crd_addr));
+	if(newsockfd<0)
+	{
+		perror("ERROR connecting");
+		return 1;
+	}
+
+	handle_requests(sockfd);
+	return 0;
+}
